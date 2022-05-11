@@ -23,6 +23,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 const val BASE_URL = "https://api.jcdecaux.com/"
 
+/*  How does this code work ?
+
+*   At the start of the app, it asks the API the list of all contracts from a country (here country_code = FR)
+*   Then create a list of all the city (contract.name) in this country. In france they are 10 cities.
+*   Right after that, it requests all the stations from all contracts stored in a variable.
+*   This variable will be filtered in another variable to get the information we need.
+*   For example for a particular city we filter the main stations variable by its contractName (cityName) in the "stationsFromCity" variable.
+*   This stationsFromCity variable is cleared and created again each time the user selects a different city.
+*   stationsFromCity may be filtered again after user uses the search filters.
+*
+* */
+
 class MainActivity : AppCompatActivity() {
 
     // variables to store row information from API
@@ -83,9 +95,11 @@ class MainActivity : AppCompatActivity() {
                 cityButton.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
                 citiesLayout.addView(cityButton, layoutParams)
                 cityButton.setOnClickListener{
-                    actualCity = city
-                    selectStationFromCity(city)
-                    display(stationsFromCity)
+                    if(city!=actualCity){       // no need to compute anything if the user selects the same city twice
+                        actualCity = city
+                        selectStationsFromCity(city)
+                        display(stationsFromCity)
+                    }
                     dialog.dismiss()
                 }
             }
@@ -144,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun selectStationFromCity(city: String){
+    private fun selectStationsFromCity(city: String){
         stationsFromCity.clear()
         for (data in stationResponseBody){
             if (data.contractName == city){
