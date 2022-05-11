@@ -20,33 +20,72 @@
         android:id="@+id/linearLayoutCompat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnChooseCity">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/inputStationName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="160dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Name of your station"
             android:inputType="textCapCharacters"
-            android:hint="Name of your station">
-        </com.google.android.material.textfield.TextInputEditText>
+            android:textSize="15sp"></com.google.android.material.textfield.TextInputEditText>
 
         <Button
             android:id="@+id/btnOkSearch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ok">
-        </Button>
+            android:layout_width="55dp"
+            android:layout_height="40dp"
+            android:text="ok"
+            android:textSize="15sp"></Button>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat">
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter by :"
+            android:textSize="18sp"></TextView>
+
+        <Button
+            android:id="@+id/btnFilterOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:backgroundTint="#FFBB86FC"
+            android:text="OPEN"
+            android:textSize="15sp"></Button>
+
+        <Button
+            android:id="@+id/btnFilterBikeAvailable"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:backgroundTint="#FFBB86FC"
+            android:text="BIKES AVAILABLE"
+            android:textSize="15sp"></Button>
+
+    </LinearLayout>
 
     <ScrollView
         android:id="@+id/mainScrollView"
         android:layout_width="409dp"
-        android:layout_height="580dp"
+        android:layout_height="560dp"
         app:layout_constraintBottom_toTopOf="@+id/buttonId"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayoutCompat">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutFilter">
 
         <LinearLayout
             android:id="@+id/mainLinearLayout"

@@ -8,11 +8,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.tapandgo.dataFromAPI.Contract
 import com.example.tapandgo.dataFromAPI.Station
-import com.example.tapandgo.StationDetails
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 const val BASE_URL = "https://api.jcdecaux.com/"
 
 /*  How does this code work ?
-
+*
 *   At the start of the app, it asks the API the list of all contracts from a country (here country_code = FR)
 *   Then create a list of all the city (contract.name) in this country. In france they are 10 cities.
 *   Right after that, it requests all the stations from all contracts stored in a variable.
@@ -33,9 +31,13 @@ const val BASE_URL = "https://api.jcdecaux.com/"
 *   This stationsFromCity variable is cleared and created again each time the user selects a different city.
 *   stationsFromCity may be filtered again after user uses the search filters.
 *
-* */
+*/
 
 class MainActivity : AppCompatActivity() {
+
+        //////////////////////////////////////////////////////////////
+        //////////      Global variables initialisation
+        //////////////////////////////////////////////////////////////
 
     // variables to store row information from API
     lateinit var stationResponseBody: List<Station>
@@ -43,13 +45,16 @@ class MainActivity : AppCompatActivity() {
 
     // global variables to store filtered information
     var cities: MutableList<String> = mutableListOf()
-    lateinit var actualCity: String
+    var actualCity: String = ""
     var stationsFromCity: MutableList<Station> = mutableListOf()
     var filteredStationsFromCity: MutableList<Station> = mutableListOf()
 
 
-    lateinit var inputStationName: TextInputEditText
 
+
+        //////////////////////////////////////////////////////////////
+        //////////      Life Cycle of th activity
+        //////////////////////////////////////////////////////////////
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +69,9 @@ class MainActivity : AppCompatActivity() {
         val btnOkSearch = findViewById<Button>(R.id.btnOkSearch)
         val btnReloadData= findViewById<Button>(R.id.buttonId)
         val btnChooseCity = findViewById<Button>(R.id.btnChooseCity)
-        inputStationName = findViewById(R.id.inputStationName)
+        val btnFilterOpen = findViewById<Button>(R.id.btnFilterOpen)
+        val btnFilterBikeAvailable = findViewById<Button>(R.id.btnFilterBikeAvailable)
+        var inputStationName = findViewById<TextInputEditText>(R.id.inputStationName)
 
 
         btnReloadData.setOnClickListener{
@@ -89,6 +96,7 @@ class MainActivity : AppCompatActivity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT)
             layoutParams.setMargins(30, 10, 30, 10)
+
             for(city in cities){
                 val cityButton = Button(this)
                 cityButton.text = city
@@ -107,8 +115,31 @@ class MainActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        btnFilterOpen.setOnClickListener{
+            if (btnFilterOpen.text == "OPEN"){
+                btnFilterOpen.text = "OPEN  ✔"
+            }
+            else {
+                btnFilterOpen.text = "OPEN"
+            }
+        }
+
+        btnFilterBikeAvailable.setOnClickListener{
+            if (btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                btnFilterBikeAvailable.text = "BIKES AVAILABLE  ✔"
+            }
+            else {
+                btnFilterBikeAvailable.text = "BIKES AVAILABLE"
+            }
+        }
 
     }
+
+
+
+        //////////////////////////////////////////////////////////////
+        //////////      API request functions
+        //////////////////////////////////////////////////////////////
 
     private fun getContractsData(){     // API request
         val retrofitBuilder = Retrofit.Builder()
@@ -130,15 +161,6 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-    private fun selectCitiesInCountry(countryCode: String){     // store all cities name of target country in a list
-        for (data in contractResponseBody){
-            if(data.country_code == countryCode){
-                cities.add(data.name)
-            }
-        }
-    }
-
-
     private fun getStationsData() {     // API request
         val retrofitBuilder = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
@@ -156,6 +178,20 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<Station>?>, t: Throwable) {
             }
         })
+    }
+
+
+
+        //////////////////////////////////////////////////////////////
+        //////////      Filter lists and Search information
+        //////////////////////////////////////////////////////////////
+
+    private fun selectCitiesInCountry(countryCode: String){     // store all cities name of target country in a list
+        for (data in contractResponseBody){
+            if(data.country_code == countryCode){
+                cities.add(data.name)
+            }
+        }
     }
 
     private fun selectStationsFromCity(city: String){
@@ -176,6 +212,13 @@ class MainActivity : AppCompatActivity() {
         }
         return askedStations
     }
+
+
+
+
+        //////////////////////////////////////////////////////////////
+        //////////      Layout display functions
+        //////////////////////////////////////////////////////////////
 
     private fun clearLayout(){
         val mainLinearLayout = findViewById<LinearLayout>(R.id.mainLinearLayout)
