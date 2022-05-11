@@ -78,15 +78,6 @@ class MainActivity : AppCompatActivity() {
             getStationsData()
         }
 
-        btnOkSearch.setOnClickListener{
-            inputStationName.onEditorAction(EditorInfo.IME_ACTION_DONE)
-            if(inputStationName.text.toString() == ""){display(stationsFromCity)}
-            else{
-                filteredStationsFromCity = search(inputStationName.text,stationsFromCity)
-                display(filteredStationsFromCity)
-            }
-        }
-
         btnChooseCity.setOnClickListener{
             val dialog = Dialog(this)
             val citiesLayout = LinearLayout(this)
@@ -109,27 +100,96 @@ class MainActivity : AppCompatActivity() {
                         display(stationsFromCity)
                     }
                     dialog.dismiss()
+                    btnFilterBikeAvailable.text = "BIKES AVAILABLE"      // reset filters
+                    btnFilterOpen.text = "OPEN"
                 }
             }
             dialog.setContentView(citiesLayout)
             dialog.show()
         }
 
+
+        btnOkSearch.setOnClickListener{
+            inputStationName.onEditorAction(EditorInfo.IME_ACTION_DONE)
+            if(inputStationName.text.toString() == ""){
+                if(btnFilterOpen.text == "OPEN"){
+                    if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                        display(stationsFromCity)
+                    }else{display(filterAvailableBikesStations(stationsFromCity))}
+                }else{
+                    if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                        display(filterOpenStations(stationsFromCity))
+                    }else{display(filterOpenStations(filterAvailableBikesStations(stationsFromCity)))}
+                }
+            }
+            else{
+                if(btnFilterOpen.text == "OPEN"){
+                    if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                        display(search(inputStationName.text, stationsFromCity))
+                    }else{display(search(inputStationName.text, filterAvailableBikesStations(stationsFromCity)))}
+                }else{
+                    if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                        display(search(inputStationName.text, filterOpenStations(stationsFromCity)))
+                    }else{display(search(inputStationName.text, filterOpenStations(filterAvailableBikesStations(stationsFromCity))))}
+                }
+            }
+        }
+
         btnFilterOpen.setOnClickListener{
-            if (btnFilterOpen.text == "OPEN"){
-                btnFilterOpen.text = "OPEN  ✔"
+            if (btnFilterOpen.text == "OPEN"){                                                  //  this is not the optimal way to filter data
+                btnFilterOpen.text = "OPEN  ✔"                                                  //  but this is the way to have a clearer code
+                if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){                           //  the test mention that it wil assess "Qualité et lisibilité du code" and not optimisation
+                    if(inputStationName.text.toString() == ""){
+                        display(filterOpenStations(stationsFromCity))
+                    }else{display(filterOpenStations(search(inputStationName.text, stationsFromCity)))}
+                }
+                else{
+                    if(inputStationName.text.toString() == ""){
+                        display(filterAvailableBikesStations(filterOpenStations(stationsFromCity)))
+                    }else{display(filterAvailableBikesStations(filterOpenStations(search(inputStationName.text, stationsFromCity))))}
+                }
             }
             else {
                 btnFilterOpen.text = "OPEN"
+                if(btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
+                    if(inputStationName.text.toString() == ""){
+                        display(stationsFromCity)
+                    }else{display(search(inputStationName.text, stationsFromCity))}
+                }
+                else{
+                    if(inputStationName.text.toString() == ""){
+                        display(filterAvailableBikesStations(stationsFromCity))
+                    }else{display(filterAvailableBikesStations(search(inputStationName.text, stationsFromCity)))}
+                }
             }
         }
 
         btnFilterBikeAvailable.setOnClickListener{
             if (btnFilterBikeAvailable.text == "BIKES AVAILABLE"){
                 btnFilterBikeAvailable.text = "BIKES AVAILABLE  ✔"
+                if(inputStationName.text.toString() == ""){
+                    if(btnFilterOpen.text == "OPEN"){
+                        display(filterAvailableBikesStations(stationsFromCity))
+                    }else{display(filterAvailableBikesStations(filterOpenStations(stationsFromCity)))}
+                }
+                else{
+                    if(btnFilterOpen.text == "OPEN"){
+                        display(search(inputStationName.text, filterAvailableBikesStations(stationsFromCity)))
+                    }else{display(search(inputStationName.text, filterAvailableBikesStations(filterOpenStations(stationsFromCity))))}
+                }
             }
             else {
                 btnFilterBikeAvailable.text = "BIKES AVAILABLE"
+                if(inputStationName.text.toString() == ""){
+                    if(btnFilterOpen.text == "OPEN"){
+                        display(stationsFromCity)
+                    }else{display(filterOpenStations(stationsFromCity))}
+                }
+                else{
+                    if(btnFilterOpen.text == "OPEN"){
+                        display(search(inputStationName.text, stationsFromCity))
+                    }else{display(search(inputStationName.text, filterOpenStations(stationsFromCity)))}
+                }
             }
         }
 
@@ -212,6 +272,27 @@ class MainActivity : AppCompatActivity() {
         }
         return askedStations
     }
+
+    private fun filterOpenStations(stations: List<Station>): MutableList<Station> {
+        var askedStations: MutableList<Station> = mutableListOf()
+        for (station in stations){
+            if(station.status == "OPEN"){
+                askedStations.add(station)
+            }
+        }
+        return askedStations
+    }
+
+    private fun filterAvailableBikesStations(stations: List<Station>): MutableList<Station> {
+        var askedStations: MutableList<Station> = mutableListOf()
+        for (station in stations){
+            if(station.mainStands.availabilities.bikes + station.mainStands.availabilities.electricalBikes != 0){
+                askedStations.add(station)
+            }
+        }
+        return askedStations
+    }
+
 
 
 
