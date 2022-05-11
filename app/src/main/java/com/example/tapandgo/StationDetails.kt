@@ -19,18 +19,21 @@ class StationDetails : AppCompatActivity() {
         val msgLastUpdate = intent.getStringExtra("txtLastUpdate")
         val msgStatus = intent.getStringExtra("txtStatus")
         val msgBikesAvailable = intent.getStringExtra("txtBikesAvailable")
+        val msgElectricBikeAvailable = intent.getStringExtra("txtStandsAvailable")
         val msgStandsAvailable = intent.getStringExtra("txtStandsAvailable")
 
         val txtStationName = findViewById<TextView>(R.id.txtStationName)
         val txtLastUpdate = findViewById<TextView>(R.id.txtLastUpdate)
         val txtStatus = findViewById<TextView>(R.id.txtStatus)
         val txtBikesAvailable = findViewById<TextView>(R.id.txtBikesAvailable)
+        val txtElectricBikeAvailable = findViewById<TextView>(R.id.txtElectricBikeAvailable)
         val txtStandsAvailable = findViewById<TextView>(R.id.txtStandsAvailable)
 
         txtStationName.text = msgStationName
         txtLastUpdate.text = msgLastUpdate
         txtStatus.text = msgStatus
         txtBikesAvailable.text = msgBikesAvailable
+        txtElectricBikeAvailable.text = msgElectricBikeAvailable
         txtStandsAvailable.text = msgStandsAvailable
 
         btnBack.setOnClickListener{ // back button to kill this activity and go to the previous one, MainActivity

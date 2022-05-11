@@ -145,6 +145,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun selectStationFromCity(city: String){
+        stationsFromCity.clear()
         for (data in stationResponseBody){
             if (data.contractName == city){
                 stationsFromCity.add(data)
@@ -184,6 +185,7 @@ class MainActivity : AppCompatActivity() {
                     it.putExtra("txtLastUpdate", station.lastUpdate)
                     it.putExtra("txtStatus", station.status)
                     it.putExtra("txtBikesAvailable", station.mainStands.availabilities.bikes.toString())
+                    it.putExtra("txtElectricBikeAvailable", station.mainStands.availabilities.electricalBikes.toString())
                     it.putExtra("txtStandsAvailable", station.mainStands.availabilities.stands.toString())
                     startActivity(it)
                 }
